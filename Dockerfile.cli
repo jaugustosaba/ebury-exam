@@ -1,0 +1,11 @@
+FROM alpine:3.20 as build
+
+RUN apk add go
+WORKDIR /src
+COPY . /src
+RUN go build -o eburycli tour/cli/main.go
+
+FROM alpine:3.20
+COPY --from=build /src/eburycli /
+COPY data/input-routes.csv /
+ENTRYPOINT /eburycli input-routes.csv
